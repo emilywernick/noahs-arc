@@ -1,0 +1,16 @@
+{
+  "name": "Noah's Arc",
+  "short_name": "Noah's Arc",
+  "description": "Gentle daily check-ins, fun drinks, and small moments.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EDF0F8",
+  "theme_color": "#EDF0F8",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

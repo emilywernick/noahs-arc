@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Noah's Arc</title>
+<meta name="theme-color" content="#EDF0F8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1D1F2E" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Noah's Arc">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F8; --surface:#FFFFFF; --surface-2:#F5F3FB; --ink:#34395A; --ink-soft:#696E90; --line:#E0DFEE;
+  --lilac:#D4CBF4; --blush:#F7CFD6; --sage:#C6E2D1; --sky:#C6DEF3; --butter:#F8E7B2; --peach:#F9D8C3;
+  --on-pastel:#34395A; --accent:#6F64BD; --accent-ink:#FFFFFF; --track:#E4E3F0;
+  --radius-lg:26px; --radius-md:16px; --radius-sm:12px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1D1F2E; --surface:#272A3D; --surface-2:#2F3248; --ink:#ECEAF8; --ink-soft:#AAACC9; --line:#393C55;
+    --lilac:#B9AEE6; --blush:#E7B3BD; --sage:#A9CDB8; --sky:#A9C7E4; --butter:#E5D193; --peach:#E6BCA2;
+    --on-pastel:#232538; --accent:#B3A9EE; --accent-ink:#1D1F2E; --track:#34374E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1D1F2E; --surface:#272A3D; --surface-2:#2F3248; --ink:#ECEAF8; --ink-soft:#AAACC9; --line:#393C55;
+  --lilac:#B9AEE6; --blush:#E7B3BD; --sage:#A9CDB8; --sky:#A9C7E4; --butter:#E5D193; --peach:#E6BCA2;
+  --on-pastel:#232538; --accent:#B3A9EE; --accent-ink:#1D1F2E; --track:#34374E;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Fredoka","Figtree",system-ui,sans-serif;font-weight:600;line-height:1.2;margin:0}
+h1{font-size:1.75rem}
+h2{font-size:1.3rem}
+h3{font-size:1.08rem;font-weight:500}
+p{margin:0}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+img{max-width:100%}
+
+.app{max-width:520px;margin:0 auto;padding:20px 18px 110px}
+.view{display:none}
+.view.active{display:block}
+.stack>*+*{margin-top:18px}
+.muted{color:var(--ink-soft)}
+.small{font-size:.9rem}
+
+.card{background:var(--surface);border-radius:var(--radius-lg);padding:20px}
+.card.soft{background:var(--surface-2)}
+.row{display:flex;gap:10px;align-items:center}
+.spread{justify-content:space-between}
+
+.btn{border:0;border-radius:999px;padding:12px 20px;background:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.small{padding:8px 14px;font-size:.9rem}
+.linkish{background:none;border:0;padding:4px 0;color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+
+/* ---- Arc hero ---- */
+.hero{text-align:center;padding-top:6px}
+.hero .date{color:var(--ink-soft);font-size:.95rem}
+.arc-wrap{position:relative;max-width:300px;margin:4px auto 0}
+.arc-wrap svg{display:block;width:100%;height:auto}
+.arc-band{fill:none;stroke-linecap:round;stroke-width:9;transition:stroke-dashoffset 900ms cubic-bezier(.3,.7,.2,1)}
+.arc-track{fill:none;stroke:var(--track);stroke-width:9;stroke-linecap:round}
+.arc-caption{position:absolute;left:0;right:0;bottom:2px;font-size:.95rem;color:var(--ink-soft);padding:0 40px}
+.arc-caption strong{display:block;font-family:"Fredoka",sans-serif;font-weight:600;font-size:1.5rem;color:var(--ink)}
+
+/* ---- Drink ---- */
+.drink{background:linear-gradient(160deg,var(--peach),var(--blush));color:var(--on-pastel)}
+.drink .kind{font-size:.85rem;font-weight:600;opacity:.8}
+.drink h2{margin:4px 0 8px}
+.drink ol{margin:10px 0 0;padding-left:20px}
+.drink li+li{margin-top:4px}
+.drink .btn.ghost{color:var(--on-pastel);border-color:rgba(52,57,90,.25)}
+.hearts{display:flex;gap:2px}
+.heart{background:none;border:0;font-size:1.45rem;line-height:1;padding:6px 3px;color:rgba(52,57,90,.28);transition:transform 150ms}
+.heart.on{color:#C0506A}
+.heart:active{transform:scale(1.2)}
+.pending{display:flex;gap:12px;align-items:center;background:var(--surface-2);border-radius:var(--radius-md);padding:14px 16px;color:var(--ink-soft);font-size:.95rem}
+.pending .dot{font-size:1.4rem}
+
+/* ---- To-dos ---- */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{border:0;border-radius:999px;padding:10px 14px;font-weight:600;font-size:.93rem;color:var(--on-pastel);display:inline-flex;align-items:center;gap:6px}
+.chip:active{transform:scale(.97)}
+.c-chores{background:var(--sky)} .c-self{background:var(--lilac)} .c-move{background:var(--sage)}
+.c-connect{background:var(--blush)} .c-rest{background:var(--butter)} .c-wind{background:var(--peach)} .c-custom{background:var(--surface-2);color:var(--ink)}
+.todo-list{list-style:none;margin:14px 0 0;padding:0}
+.todo{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.todo:first-child{border-top:0}
+.check{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;color:transparent;font-weight:700;transition:background 200ms,border-color 200ms}
+.todo.done .check{background:var(--sage);border-color:var(--sage);color:var(--on-pastel)}
+.todo .txt{flex:1;min-width:0}
+.todo .idea{font-size:.88rem;color:var(--ink-soft)}
+.todo.done .label{text-decoration:line-through;text-decoration-color:var(--ink-soft);color:var(--ink-soft)}
+.todo .remove{background:none;border:0;color:var(--ink-soft);font-size:1.2rem;padding:2px 6px;line-height:1}
+.tag{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.custom-row{display:flex;gap:8px;margin-top:12px}
+.field{width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--radius-sm);padding:11px 14px}
+textarea.field{resize:vertical;min-height:78px}
+.empty{color:var(--ink-soft);font-size:.95rem;margin-top:12px}
+
+/* ---- Check-in ---- */
+.q{margin-top:18px}
+.q:first-of-type{margin-top:14px}
+.q label.qlabel{display:block;font-weight:600;margin-bottom:8px}
+.moods{display:flex;justify-content:space-between;gap:6px}
+.mood{flex:1;border:2px solid transparent;background:var(--surface-2);border-radius:var(--radius-md);padding:10px 0 8px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.78rem;color:var(--ink-soft)}
+.mood span{font-size:1.7rem;line-height:1.1}
+.mood[aria-pressed="true"]{border-color:var(--accent);background:var(--surface);color:var(--ink)}
+.seg{display:flex;background:var(--surface-2);border-radius:999px;padding:4px}
+.seg button{flex:1;border:0;background:none;border-radius:999px;padding:9px 0;font-weight:600;color:var(--ink-soft)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(40,40,80,.12)}
+.seg button.hi[aria-pressed="true"]{background:var(--blush);color:var(--on-pastel)}
+.support{background:var(--sky);color:var(--on-pastel)}
+.support .btn.ghost{color:var(--on-pastel);border-color:rgba(52,57,90,.25)}
+.breath{display:flex;flex-direction:column;align-items:center;gap:12px;padding:14px 0 4px}
+.orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,var(--lilac) 70%);transform:scale(.6);transition:transform 4s ease-in-out}
+.orb.in{transform:scale(1)}
+.orb.out{transform:scale(.6);transition-duration:6s}
+.breath-label{font-family:"Fredoka",sans-serif;font-size:1.15rem;min-height:1.5em}
+.history{list-style:none;padding:0;margin:10px 0 0}
+.history li{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.history li:first-child{border-top:0}
+.history .em{font-size:1.5rem;line-height:1.2}
+.thanks{background:var(--sage);color:var(--on-pastel)}
+
+/* ---- Hobbies ---- */
+.hobby-picks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.hobby-pick{border:2px solid transparent;border-radius:var(--radius-md);padding:14px;text-align:left;color:var(--on-pastel);font-weight:600;display:flex;flex-direction:column;gap:4px}
+.hobby-pick span{font-size:1.6rem}
+.hobby-pick[aria-pressed="true"]{border-color:var(--accent)}
+.lesson{margin-top:6px}
+.lesson h3{font-size:1.25rem;font-family:"Fredoka",sans-serif;font-weight:600;margin:6px 0 8px}
+.lesson ul{margin:10px 0 0;padding-left:20px}
+.lesson li+li{margin-top:4px}
+.lesson-done{margin-top:14px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--sage);color:var(--on-pastel);font-weight:500}
+
+/* ---- Me ---- */
+.days-num{font-family:"Fredoka",sans-serif;font-size:3.2rem;font-weight:600;line-height:1;margin-top:10px}
+.gentle{margin-top:14px;padding:14px;border-radius:var(--radius-sm);background:var(--lilac);color:var(--on-pastel)}
+.fav{display:flex;justify-content:space-between;padding:9px 0;border-top:1px solid var(--line)}
+.fav:first-child{border-top:0}
+.help a{color:var(--accent);font-weight:600}
+
+/* ---- Nav ---- */
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:10}
+.nav-inner{max-width:520px;margin:0 auto;display:flex}
+.nav button{flex:1;border:0;background:none;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:.78rem;font-weight:600;color:var(--ink-soft);border-radius:14px}
+.nav button .ic{font-size:1.35rem;line-height:1.2}
+.nav button[aria-current="page"]{color:var(--ink);background:var(--surface-2)}
+.nav .dotbadge{width:7px;height:7px;border-radius:50%;background:#C0506A;display:inline-block;margin-left:3px;vertical-align:top}
+
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50;width:100%;height:100%}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;font-size:.93rem;transition:all 250ms;z-index:40;max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- TODAY -->
+  <section class="view active" id="view-today" aria-labelledby="t-h">
+    <div class="stack">
+      <header class="hero">
+        <p class="date" id="today-date"></p>
+        <h1 id="t-h">Noah's Arc</h1>
+        <div class="arc-wrap">
+          <svg viewBox="0 0 280 150" aria-hidden="true" id="arc-svg"></svg>
+          <p class="arc-caption" id="arc-caption"></p>
+        </div>
+      </header>
+
+      <div id="drink-slot"></div>
+
+      <div id="checkin-nudge"></div>
+
+      <section class="card" aria-labelledby="todo-h">
+        <h2 id="todo-h">Today's moments</h2>
+        <p class="muted small">Tap to add a 15-minute moment. Each one you finish adds color to your arc.</p>
+        <div class="chips" id="chips"></div>
+        <form class="custom-row" id="custom-form" autocomplete="off">
+          <label for="custom-input" class="sr">Add your own</label>
+          <input id="custom-input" class="field" placeholder="Add your own…" maxlength="80">
+          <button class="btn small" type="submit">Add</button>
+        </form>
+        <ul class="todo-list" id="todo-list"></ul>
+      </section>
+    </div>
+  </section>
+
+  <!-- CHECK-IN -->
+  <section class="view" id="view-checkin" aria-labelledby="c-h">
+    <div class="stack">
+      <header>
+        <h1 id="c-h">Evening check-in</h1>
+        <p class="muted">A minute to look back on today. No wrong answers.</p>
+      </header>
+
+      <div class="card">
+        <div class="q">
+          <label class="qlabel" id="mood-l">How are you feeling?</label>
+          <div class="moods" role="group" aria-labelledby="mood-l" id="moods"></div>
+        </div>
+        <div class="q">
+          <label class="qlabel" id="crave-l">Cravings today</label>
+          <div class="seg" role="group" aria-labelledby="crave-l" id="cravings">
+            <button type="button" data-v="low" aria-pressed="false">Low</button>
+            <button type="button" data-v="medium" aria-pressed="false">Medium</button>
+            <button type="button" data-v="high" class="hi" aria-pressed="false">High</button>
+          </div>
+        </div>
+        <div class="q">
+          <label class="qlabel" for="proud">What's something you did today that you're proud of?</label>
+          <textarea id="proud" class="field" maxlength="400" placeholder="Big or small, it counts."></textarea>
+        </div>
+        <div class="q">
+          <label class="qlabel" for="note">Anything else on your mind?</label>
+          <textarea id="note" class="field" maxlength="600" placeholder="Optional"></textarea>
+        </div>
+        <div class="q"><button class="btn" id="save-checkin" type="button">Save check-in</button></div>
+      </div>
+
+      <div id="checkin-result"></div>
+
+      <section class="card soft" aria-labelledby="hist-h">
+        <h2 id="hist-h">Past evenings</h2>
+        <ul class="history" id="history"></ul>
+      </section>
+    </div>
+  </section>
+
+  <!-- HOBBIES -->
+  <section class="view" id="view-hobbies" aria-labelledby="h-h">
+    <div class="stack">
+      <header>
+        <h1 id="h-h">Learn something new</h1>
+        <p class="muted">One small step a day. Go at your own pace, skip days, switch anytime.</p>
+      </header>
+      <div class="hobby-picks" id="hobby-picks" role="group" aria-label="Choose a hobby"></div>
+      <div class="card" id="lesson-card"></div>
+    </div>
+  </section>
+
+  <!-- ME -->
+  <section class="view" id="view-me" aria-labelledby="m-h">
+    <div class="stack">
+      <header>
+        <h1 id="m-h">Just for you</h1>
+      </header>
+
+      <section class="card" aria-labelledby="days-h" id="days-card"></section>
+
+      <section class="card" aria-labelledby="fav-h">
+        <h2 id="fav-h">Favorite drinks</h2>
+        <div id="favs" class="small" style="margin-top:8px"></div>
+      </section>
+
+      <section class="card soft help" aria-labelledby="help-h">
+        <h2 id="help-h">If today feels really hard</h2>
+        <p class="small" style="margin-top:8px">Reaching out is a strong move. In the US, the SAMHSA National Helpline is free and open 24/7: <a href="tel:18006624357">1-800-662-4357</a>. You can also call or text <a href="tel:988">988</a> any time you need to talk to someone right now.</p>
+      </section>
+    </div>
+  </section>
+</main>
+
+<nav class="nav" aria-label="Main">
+  <div class="nav-inner">
+    <button data-view="today" aria-current="page"><span class="ic" aria-hidden="true">🌈</span>Today</button>
+    <button data-view="checkin"><span class="ic" aria-hidden="true">🌙</span><span>Check-in<span id="ci-badge"></span></span></button>
+    <button data-view="hobbies"><span class="ic" aria-hidden="true">🌱</span>Hobbies</button>
+    <button data-view="me"><span class="ic" aria-hidden="true">💜</span>Me</button>
+  </div>
+</nav>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ================= Content ================= */
+var CATS = {
+  chores:  {label:"15 min of chores", emoji:"🧺", cls:"c-chores", color:"var(--sky)",
+            ideas:["Clear one counter","Load or unload the dishwasher","Fold a basket of laundry","Wipe down the bathroom sink","Take out trash and recycling","Tidy the entryway"]},
+  self:    {label:"15 min for yourself", emoji:"🎮", cls:"c-self", color:"var(--lilac)",
+            ideas:["Play a favorite game","Organize one drawer","Learn something new on YouTube","Sort your phone photos","Read a few pages","Try a Duolingo lesson"]},
+  move:    {label:"15 min moving", emoji:"🚶", cls:"c-move", color:"var(--sage)",
+            ideas:["Walk around the block","Stretch on the floor","Dance to three songs","Take the stairs a few times","Easy yoga video"]},
+  connect: {label:"15 min connecting", emoji:"💬", cls:"c-connect", color:"var(--blush)",
+            ideas:["Text a friend you miss","Call a family member","Send someone a funny meme","Voice-memo an old friend","Make plans for the weekend"]},
+  rest:    {label:"15 min rest", emoji:"🛁", cls:"c-rest", color:"var(--butter)",
+            ideas:["Take a short nap","Run a warm bath or shower","Lie down with a playlist","Sit outside and do nothing","Listen to a calm podcast"]},
+  wind:    {label:"Wind down", emoji:"📺", cls:"c-wind", color:"var(--peach)",
+            ideas:["Play a video game","Start a new show","Watch something you've never seen","Put on a comfort movie","Try a cozy game"]}
+};
+var CAT_ORDER = ["chores","self","move","connect","rest","wind"];
+
+var DRINKS = [
+  {id:"cucumber", kind:"Fancy mocktail", name:"Cucumber Mint Cooler", steps:["Muddle 4 cucumber slices and a few mint leaves in a glass.","Add ice and the juice of half a lime.","Top with sparkling water and a cucumber ribbon."]},
+  {id:"mojito", kind:"Fancy mocktail", name:"Virgin Mojito", steps:["Muddle 8 mint leaves with 2 lime wedges and 1 tsp sugar.","Fill with crushed ice.","Top with club soda, stir, and garnish with mint."]},
+  {id:"grapefruit", kind:"Fancy mocktail", name:"Grapefruit Rosemary Spritz", steps:["Fill a wine glass with ice.","Add 3 oz grapefruit juice and a sprig of rosemary.","Top with sparkling water. Rub the rosemary between your fingers first for extra aroma."]},
+  {id:"cranlime", kind:"Fancy mocktail", name:"Cranberry Lime Fizz", steps:["Pour 3 oz cranberry juice over ice.","Squeeze in half a lime.","Top with ginger ale and drop in a few frozen cranberries."]},
+  {id:"peach", kind:"Fancy mocktail", name:"Ginger Peach Smash", steps:["Muddle a few peach slices in a glass.","Add ice and a squeeze of lemon.","Top with ginger beer and stir gently."]},
+  {id:"pom", kind:"Fancy mocktail", name:"Grown-up Shirley Temple", steps:["Fill a glass with ice.","Add 1 oz pomegranate juice and a squeeze of lime.","Top with lemon-lime soda and add a real cherry or two."]},
+  {id:"yerba", kind:"Fancy mocktail", name:"Yerba Mate Mocktail", steps:["Fill a glass with ice and a few mint leaves.","Pour in chilled yerba mate (a canned one works great) until about ¾ full.","Add a squeeze of lime and top with sparkling water or ginger ale."]},
+  {id:"pineapple", kind:"Fancy mocktail", name:"Pineapple Mocktail", steps:["Fill a glass with ice.","Add 4 oz pineapple juice, a squeeze of lime, and a splash of coconut water or coconut milk if you have it.","Top with sparkling water and garnish with a pineapple wedge or cherry."]},
+  {id:"oj", kind:"Simple swap", name:"Orange Juice", steps:["Pour cold orange juice into a nice glass with ice.","Want it fancy? Add a splash of sparkling water for a fizzy orange spritz.","Garnish with an orange slice."]},
+  {id:"newsoda", kind:"Simple swap", name:"Try a New Soda!", steps:["Next time you're at the store, grab a soda you've never tried. Look for fun ones like Mexican Coke, Jarritos, a craft root beer, or a Japanese Ramune.","Chill it well and pour it over ice.","Rate it here so you remember the good ones."]},
+  {id:"fountain", kind:"Simple swap", name:"Fountain Soda", steps:["Swing by a gas station, fast food spot, or diner on the way home.","Get your favorite, or mix flavors like a kid again.","Big cup, lots of ice, enjoy the ride."]},
+  {id:"citrus", kind:"Simple swap", name:"Citrus Sparkling Water", steps:["Fill a nice glass with ice. (The nice glass matters.)","Add a slice each of lemon, lime, and orange.","Pour in your favorite sparkling water."]},
+  {id:"greentea", kind:"Simple swap", name:"Honey Lemon Iced Green Tea", steps:["Brew green tea and let it cool, or use store-bought.","Stir in a spoonful of honey while it's still warm.","Pour over ice with a lemon wheel."]},
+  {id:"kombucha", kind:"Simple swap", name:"Kombucha on Ice", steps:["Pick a fun flavor, like ginger or berry.","Pour over ice in a tall glass.","Add a squeeze of lime or a few berries."]},
+  {id:"palmer", kind:"Simple swap", name:"Arnold Palmer", steps:["Fill a glass with ice.","Pour in half iced tea, half lemonade.","Stir and add a lemon slice."]},
+  {id:"cocoa", kind:"Cozy drink", name:"Homemade Hot Cocoa", steps:["Warm a mug of milk (any kind) on the stove.","Whisk in 2 tbsp cocoa powder, 1–2 tbsp sugar, a pinch of salt, and a splash of vanilla.","Top with whipped cream or marshmallows."]},
+  {id:"packetcocoa", kind:"Cozy drink", name:"Hot Cocoa (from a packet)", steps:["Heat a mug of milk or water. Milk makes it creamier.","Stir in the packet until there are no lumps.","Toss in a few marshmallows or a squirt of whipped cream. Easy win."]},
+  {id:"chai", kind:"Cozy drink", name:"Chai Latte", steps:["Steep a chai tea bag in half a mug of hot water for 5 minutes.","Warm and froth milk (shake it in a jar, then microwave 30 seconds).","Pour in the milk, add honey, and sprinkle cinnamon on top."]},
+  {id:"golden", kind:"Cozy drink", name:"Golden Latte", steps:["Warm a mug of milk and froth it (shake it in a jar, then microwave 30 seconds).","Whisk in ½ tsp turmeric, a pinch of cinnamon and ginger, and a pinch of black pepper.","Sweeten with honey or maple syrup and dust cinnamon on top."]},
+  {id:"steamer", kind:"Cozy drink", name:"Vanilla Cinnamon Steamer", steps:["Warm a mug of milk until steaming (don't let it boil).","Stir in 1 tbsp maple syrup or brown sugar and a splash of vanilla.","Froth it up and sprinkle cinnamon on top. Like a hug in a mug."]},
+  {id:"caramel", kind:"Cozy drink", name:"Hot Caramel Apple", steps:["Heat apple juice or cider in a mug.","Stir in a spoonful of caramel sauce until it melts.","Top with whipped cream and a drizzle more caramel."]},
+  {id:"cider", kind:"Cozy drink", name:"Spiced Apple Cider", steps:["Heat apple cider in a small pot.","Add a cinnamon stick and an orange slice and simmer 5 minutes.","Pour into a mug, cinnamon stick and all."]},
+  {id:"peppermint", kind:"Cozy drink", name:"Peppermint Honey Tea", steps:["Steep a peppermint tea bag for 5 minutes.","Stir in a spoonful of honey.","Add a lemon slice and wrap your hands around the mug."]}
+];
+
+var TIPS = [
+  "Cravings rise like a wave, peak, and pass, usually within 15 to 30 minutes. You only have to ride this one.",
+  "Change your setting. Step outside, move to another room, or take a quick shower.",
+  "Drink something cold and fizzy slowly. Having something in your hands helps.",
+  "Name five things you can see, four you can hear, and three you can touch.",
+  "Text someone, even just \"hey.\" You don't have to explain.",
+  "Remind yourself why you started. You've gotten through hard evenings before."
+];
+
+var MOODS = [
+  {v:1, e:"😣", l:"Rough"},
+  {v:2, e:"😕", l:"Meh"},
+  {v:3, e:"🙂", l:"Okay"},
+  {v:4, e:"😊", l:"Good"},
+  {v:5, e:"🤩", l:"Great"}
+];
+
+var HOBBIES = {
+  cooking: {name:"Cooking", emoji:"🍳", color:"var(--peach)", lessons:[
+    {t:"Hold a knife like a chef", b:"Good knife skills make everything easier and safer.", s:["Pinch the blade where it meets the handle with your thumb and index finger.","Curl the fingertips of your other hand under, like a claw, so your knuckles guide the blade.","Slowly dice one onion. Speed comes later."]},
+    {t:"Soft scrambled eggs", b:"The first dish most chefs learn to get just right.", s:["Whisk 2–3 eggs with a pinch of salt.","Melt a little butter in a pan on low heat.","Stir constantly with a spatula and take them off while they still look a little glossy."]},
+    {t:"Fluffy rice on the stove", b:"A base for a hundred meals.", s:["Rinse 1 cup of white rice until the water runs mostly clear.","Add 1½ cups water and a pinch of salt, bring to a boil.","Cover, turn to the lowest heat for 15 minutes, then rest 10 minutes with the lid on."]},
+    {t:"Roast any vegetable", b:"Crispy edges make vegetables taste completely different.", s:["Heat the oven to 425°F (220°C).","Cut vegetables into even pieces and toss with oil and salt.","Spread in one layer and roast 20–30 minutes, flipping once, until browned."]},
+    {t:"Garlic olive oil pasta", b:"Five ingredients, fifteen minutes.", s:["Boil pasta in well-salted water.","Gently warm sliced garlic and a pinch of chili flakes in olive oil until golden.","Toss the pasta in with a splash of pasta water, parsley, and parmesan."]},
+    {t:"Build a stir-fry", b:"Learn the pattern and you'll never need a recipe.", s:["Get everything chopped before you turn on the heat.","Cook protein first in a very hot pan, then set it aside.","Cook vegetables, add the protein back, and finish with soy sauce, garlic, and ginger."]},
+    {t:"Soup from scratch", b:"Cozy, forgiving, and it makes leftovers.", s:["Soften onion, carrot, and celery in oil for 8 minutes.","Add garlic, then broth, a can of beans or tomatoes, and herbs.","Simmer 20 minutes and taste. Adjust salt before serving."]},
+    {t:"Cook for someone", b:"Put it all together and share it.", s:["Pick a dish you've made before.","Make it for someone you like being around.","Notice how good it feels to feed people."]}
+  ]},
+  drawing: {name:"Drawing & painting", emoji:"🎨", color:"var(--lilac)", lessons:[
+    {t:"Warm up with lines", b:"Loosening your hand is the first skill.", s:["Fill a page with straight lines, curves, and spirals.","Try drawing from your shoulder, not just your wrist.","Don't erase anything. This is just practice."]},
+    {t:"See the shapes", b:"Everything is made of simple shapes.", s:["Pick an object near you.","Draw it using only circles, boxes, and triangles.","Then add a few details on top."]},
+    {t:"Draw a mug from life", b:"Real objects teach you to really look.", s:["Set a mug in front of you.","Notice the top is an oval, not a circle.","Spend 10 minutes looking more than you draw."]},
+    {t:"Light and shadow", b:"Shading makes flat drawings feel real.", s:["Draw five boxes in a row.","Shade them from the lightest to the darkest you can make.","Now shade a ball with light coming from one side."]},
+    {t:"Blind contour drawing", b:"A fun exercise that trains your eye.", s:["Look only at your hand, not the paper.","Slowly trace its outline with your pencil without lifting it.","Laugh at the result. That's the point."]},
+    {t:"Mix your colors", b:"Watercolor or any paint you have works.", s:["Make a row of small swatches mixing two colors in different amounts.","Try adding water to lighten instead of white.","Notice which mixes you like best."]},
+    {t:"Paint the view", b:"Put it together with a small scene.", s:["Look out a window or around a room.","Paint or draw a small, simple version in 15 minutes.","Keep it loose. Shapes and colors over details."]},
+    {t:"A page just for fun", b:"No goals today.", s:["Fill a page with doodles, patterns, or whatever comes.","Use your favorite colors.","Keep it somewhere you'll see it."]}
+  ]},
+  garden: {name:"Gardening & plants", emoji:"🪴", color:"var(--sage)", lessons:[
+    {t:"Pick an easy first plant", b:"Start with a plant that forgives mistakes.", s:["Good starters: pothos, snake plant, spider plant, or basil.","Check a nursery or grocery store.","Pick one that looks healthy with no yellow leaves."]},
+    {t:"Find the right light", b:"Light matters more than anything.", s:["Look up what light your plant likes.","Bright indirect light means near a window but not in harsh direct sun.","Move it if it's leaning or looking pale."]},
+    {t:"Water the right way", b:"Most houseplants are loved to death by overwatering.", s:["Push a finger an inch into the soil.","Water only if it feels dry.","Water slowly until a little drains out the bottom."]},
+    {t:"Regrow green onions", b:"A tiny kitchen miracle.", s:["Save the white root ends of green onions.","Stand them in a glass with a little water on a sunny sill.","Change the water every couple days and watch them regrow."]},
+    {t:"Make a new plant from a cutting", b:"Free plants, forever.", s:["Cut a pothos stem just below a small bump (a node).","Put it in a jar of water.","Roots show up in 2–4 weeks. Then pot it in soil."]},
+    {t:"Start seeds", b:"Watch something grow from nothing.", s:["Fill a small pot with moist potting mix.","Press in a few basil seeds barely below the surface.","Keep the soil damp and warm. Sprouts in about a week."]},
+    {t:"Repot a plant", b:"Give a crowded plant room to grow.", s:["Pick a pot one size bigger with a drainage hole.","Loosen the roots gently.","Set it at the same depth in fresh soil and water well."]},
+    {t:"Name your plant", b:"Seriously. It helps you remember to care for it.", s:["Give your plant a name.","Take a photo today.","Take another in a month and compare."]}
+  ]},
+  workout: {name:"Blow off steam", emoji:"🥊", color:"var(--blush)", lessons:[
+    {t:"Shake it out", b:"Anger lives in the body. Let it move.", s:["Shake your hands, arms, and legs hard for 60 seconds.","Stop and take four slow breaths, longer out than in.","Repeat twice."]},
+    {t:"Shadow boxing", b:"Punch the air, not the wall.", s:["Stand with feet shoulder-width, fists up.","Throw fast jabs and crosses for 1 minute.","Rest 30 seconds. Do 3 rounds."]},
+    {t:"Wall push-ups", b:"Push the frustration away, literally.", s:["Stand arm's length from a wall, hands flat on it.","Lower your chest toward the wall and push back.","Do as many as feel good. Rest and repeat."]},
+    {t:"Squat and breathe", b:"Big muscles burn off tension fast.", s:["Stand tall, then sit back like into a chair.","Breathe in going down, out coming up.","Do 3 sets of 10."]},
+    {t:"Towel wring", b:"Great when you feel like squeezing something.", s:["Roll up a towel and grip each end.","Twist it as hard as you can for 10 seconds, then release.","Notice your shoulders drop. Repeat 5 times."]},
+    {t:"Power walk", b:"Walking resets your head.", s:["Walk as fast as you comfortably can for 10 minutes.","Swing your arms.","Notice when your thoughts start to slow down."]},
+    {t:"The 10-minute circuit", b:"Put the moves together.", s:["1 min shadow boxing, 1 min squats, 1 min wall push-ups.","Rest 1 minute.","Repeat 2 more times, then stretch."]},
+    {t:"Make your reset plan", b:"Have a go-to for when anger shows up.", s:["Pick your two favorite moves from this series.","Decide where you'll do them at home.","Next time anger hits, go straight there for 5 minutes."]}
+  ]}
+};
+var HOBBY_ORDER = ["cooking","drawing","garden","workout"];
+
+/* ================= State ================= */
+var KEY = "noahs-arc-v1";
+function pad(n){return String(n).padStart(2,"0");}
+function dayKey(d){d=d||new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function parseKey(k){var p=k.split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
+function defaultState(){return {v:1,startDate:null,todos:{date:dayKey(),items:[]},checkins:{},ratings:{},drink:{date:null,id:null},hobbies:{},currentHobby:"cooking",showDays:false,updatedAt:0};}
+function normalize(s){
+  var d=defaultState();
+  if(!s||typeof s!=="object") return d;
+  for(var k in d){ if(!(k in s)) s[k]=d[k]; }
+  if(!s.todos||!Array.isArray(s.todos.items)) s.todos=d.todos;
+  return s;
+}
+var state;
+try{ state=normalize(JSON.parse(localStorage.getItem(KEY))); }catch(e){ state=defaultState(); }
+
+function rollDay(){
+  var t=dayKey();
+  if(state.todos.date!==t){ state.todos={date:t,items:[]}; }
+}
+rollDay();
+
+var remote=null, remoteTimer=null;
+function save(){
+  state.updatedAt=Date.now();
+  try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){}
+  if(remote){ clearTimeout(remoteTimer); remoteTimer=setTimeout(pushRemote,700); }
+}
+function pushRemote(){
+  if(!remote) return;
+  remote.set({json:JSON.stringify(state),updatedAt:state.updatedAt}).catch(function(){ remote=null; });
+}
+
+/* Sync to a private per-person record when the viewer supports it */
+(function(){
+  if(!window.claude||typeof window.claude.use!=="function") return;
+  Promise.all([window.claude.use("db"),window.claude.use("user")]).then(function(r){
+    var db=r[0], user=r[1];
+    if(!db||!user) return null;
+    return user.id().then(function(uid){
+      if(!uid) return null;
+      var ref=db.doc("data/users/"+uid+"/state");
+      return ref.get().then(function(snap){
+        remote=ref;
+        if(snap.exists){
+          var d=snap.data();
+          if(d&&d.json&&(d.updatedAt||0)>(state.updatedAt||0)){
+            try{ state=normalize(JSON.parse(d.json)); rollDay(); localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){}
+            renderAll();
+            return;
+          }
+        }
+        if(state.updatedAt) pushRemote();
+      });
+    });
+  }).catch(function(){ remote=null; });
+})();
+
+/* ================= Helpers ================= */
+function $(id){return document.getElementById(id);}
+function el(tag,attrs,kids){
+  var n=document.createElement(tag);
+  if(attrs) for(var k in attrs){
+    if(k==="text") n.textContent=attrs[k];
+    else if(k==="class") n.className=attrs[k];
+    else if(k.slice(0,2)==="on") n.addEventListener(k.slice(2),attrs[k]);
+    else n.setAttribute(k,attrs[k]);
+  }
+  (kids||[]).forEach(function(c){ if(c!=null) n.appendChild(typeof c==="string"?document.createTextNode(c):c); });
+  return n;
+}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+var reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var toastTimer;
+function toast(msg){
+  var t=$("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove("show");},2400);
+}
+function greeting(){
+  var h=new Date().getHours();
+  return h<12?"Good morning":h<17?"Good afternoon":"Good evening";
+}
+
+/* ================= Confetti ================= */
+function confetti(){
+  if(reduceMotion) return;
+  var c=$("confetti"), ctx=c.getContext("2d");
+  var W=c.width=window.innerWidth*devicePixelRatio, H=c.height=window.innerHeight*devicePixelRatio;
+  var cs=getComputedStyle(document.documentElement);
+  var cols=["--lilac","--blush","--sage","--sky","--butter","--peach"].map(function(v){return cs.getPropertyValue(v).trim();});
+  var parts=[];
+  for(var i=0;i<80;i++){
+    parts.push({x:W/2+(Math.random()-.5)*W*.2,y:H*.62,vx:(Math.random()-.5)*14*devicePixelRatio,vy:(-10-Math.random()*12)*devicePixelRatio,
+      r:(4+Math.random()*5)*devicePixelRatio,col:pick(cols),rot:Math.random()*6,vr:(Math.random()-.5)*.3,shape:Math.random()<.5});
+  }
+  var start=performance.now();
+  function frame(now){
+    var t=now-start; ctx.clearRect(0,0,W,H);
+    parts.forEach(function(p){
+      p.vy+=.45*devicePixelRatio; p.vx*=.985; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      ctx.save(); ctx.globalAlpha=Math.max(0,1-t/1700); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.col;
+      if(p.shape){ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fill();} else ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);
+      ctx.restore();
+    });
+    if(t<1700) requestAnimationFrame(frame); else ctx.clearRect(0,0,W,H);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ================= Arc ================= */
+function renderArc(){
+  var svg=$("arc-svg"), items=state.todos.items;
+  var done=items.filter(function(i){return i.done;}).length, total=items.length;
+  var frac=total?done/total:0;
+  var bands=["--blush","--peach","--butter","--sage","--sky","--lilac"];
+  var cx=140, cy=140, html="";
+  bands.forEach(function(b,i){
+    var r=128-i*14;
+    var d="M "+(cx-r)+" "+cy+" A "+r+" "+r+" 0 0 1 "+(cx+r)+" "+cy;
+    html+='<path class="arc-track" d="'+d+'"/>';
+    html+='<path class="arc-band" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="'+(100-frac*100)+'" style="stroke:var('+b+');transition-delay:'+(i*70)+'ms" d="'+d+'"/>';
+  });
+  svg.innerHTML=html;
+  var cap=$("arc-caption");
+  cap.textContent="";
+  if(!total){
+    cap.appendChild(el("strong",{text:greeting()}));
+    cap.appendChild(document.createTextNode("Add a moment below to start today's arc."));
+  } else if(done===total){
+    cap.appendChild(el("strong",{text:"Full rainbow 🌈"}));
+    cap.appendChild(document.createTextNode("Everything done. Be proud of today."));
+  } else {
+    cap.appendChild(el("strong",{text:done+" of "+total}));
+    cap.appendChild(document.createTextNode(done?"moments done. Keep going, gently.":"moments planned. You've got this."));
+  }
+}
+
+/* ================= Drinks ================= */
+function drinkWeight(d){
+  var r=state.ratings[d.id];
+  return r===5?5:r===4?4:r===3?2:r===2?.5:r===1?.1:2.5;
+}
+function chooseDrink(excludeId){
+  var pool=DRINKS.filter(function(d){return d.id!==excludeId;});
+  var total=pool.reduce(function(s,d){return s+drinkWeight(d);},0), x=Math.random()*total;
+  for(var i=0;i<pool.length;i++){ x-=drinkWeight(pool[i]); if(x<=0) return pool[i]; }
+  return pool[0];
+}
+function todaysDrink(){
+  var t=dayKey();
+  if(state.drink.date!==t||!DRINKS.some(function(d){return d.id===state.drink.id;})){
+    state.drink={date:t,id:chooseDrink().id}; save();
+  }
+  return DRINKS.filter(function(d){return d.id===state.drink.id;})[0];
+}
+function drinkCard(d, heading, onAnother){
+  var hearts=el("div",{class:"hearts",role:"group","aria-label":"Rate this drink"});
+  function paint(){
+    var r=state.ratings[d.id]||0;
+    Array.prototype.forEach.call(hearts.children,function(b,i){ b.classList.toggle("on",i<r); b.setAttribute("aria-pressed",String(i<r)); });
+  }
+  for(var i=1;i<=5;i++){(function(n){
+    hearts.appendChild(el("button",{class:"heart",type:"button","aria-label":"Rate "+n+" of 5",onclick:function(){
+      state.ratings[d.id]=n; save(); paint(); renderFavs();
+      toast(n>=4?"Saved to favorites 💜":"Thanks! Noted for next time.");
+    }},["♥"]));
+  })(i);}
+  paint();
+  return el("section",{class:"card drink","aria-label":"Drink idea"},[
+    el("p",{class:"kind",text:heading+" · "+d.kind}),
+    el("h2",{text:d.name}),
+    el("ol",null,d.steps.map(function(s){return el("li",{text:s});})),
+    el("div",{class:"row spread",style:"margin-top:14px;flex-wrap:wrap"},[
+      el("div",null,[el("p",{class:"small",text:"How was it?"}),hearts]),
+      onAnother?el("button",{class:"btn ghost small",type:"button",onclick:onAnother},["Show another"]):null
+    ])
+  ]);
+}
+function renderDrink(){
+  var slot=$("drink-slot"); slot.innerHTML="";
+  var h=new Date().getHours();
+  if(h>=17){
+    var d=todaysDrink();
+    slot.appendChild(drinkCard(d,"5 PM drink",function(){
+      state.drink={date:dayKey(),id:chooseDrink(d.id).id}; save(); renderDrink();
+    }));
+  } else {
+    slot.appendChild(el("div",{class:"pending"},[
+      el("span",{class:"dot","aria-hidden":"true",text:"🍹"}),
+      el("span",{text:"At 5 PM, a new drink idea will show up right here."})
+    ]));
+  }
+}
+
+/* ================= To-dos ================= */
+function renderChips(){
+  var box=$("chips"); box.innerHTML="";
+  CAT_ORDER.forEach(function(k){
+    var c=CATS[k];
+    box.appendChild(el("button",{class:"chip "+c.cls,type:"button",onclick:function(){addTodo(k);}},[
+      el("span",{"aria-hidden":"true",text:c.emoji}), "+ "+c.label
+    ]));
+  });
+}
+function addTodo(cat,text){
+  var item={id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),cat:cat,done:false};
+  if(cat==="custom"){ item.label=text; }
+  else { item.label=CATS[cat].label; item.idea=pick(CATS[cat].ideas); }
+  state.todos.items.push(item); save(); renderTodos(); renderArc();
+}
+function renderTodos(){
+  var ul=$("todo-list"); ul.innerHTML="";
+  var items=state.todos.items;
+  if(!items.length){ ul.appendChild(el("li",{class:"empty",text:"Nothing yet. Pick one moment to start. One is plenty."})); return; }
+  items.forEach(function(it){
+    var color=it.cat==="custom"?"var(--line)":CATS[it.cat].color;
+    var li=el("li",{class:"todo"+(it.done?" done":"")},[
+      el("button",{class:"check",type:"button","aria-label":(it.done?"Mark not done: ":"Mark done: ")+it.label,"aria-pressed":String(it.done),onclick:function(){toggleTodo(it.id);}},["✓"]),
+      el("div",{class:"txt"},[
+        el("div",{class:"label"},[el("span",{class:"tag",style:"background:"+color,"aria-hidden":"true"}),it.label]),
+        it.idea?el("div",{class:"idea",text:"Idea: "+it.idea}):null
+      ]),
+      el("button",{class:"remove",type:"button","aria-label":"Remove "+it.label,onclick:function(){removeTodo(it.id);}},["×"])
+    ]);
+    ul.appendChild(li);
+  });
+}
+var CHEERS=["Nice one! 🎉","That counts! ✨","Look at you go 🌈","Another color on the arc!","Proud of you 💜","Done and done!"];
+function toggleTodo(id){
+  var it=state.todos.items.filter(function(i){return i.id===id;})[0]; if(!it) return;
+  it.done=!it.done; save(); renderTodos(); renderArc();
+  if(it.done){ confetti(); var all=state.todos.items.every(function(i){return i.done;}); toast(all?"Full rainbow today! 🌈":pick(CHEERS)); }
+}
+function removeTodo(id){
+  state.todos.items=state.todos.items.filter(function(i){return i.id!==id;}); save(); renderTodos(); renderArc();
+}
+$("custom-form").addEventListener("submit",function(e){
+  e.preventDefault(); var v=$("custom-input").value.trim(); if(!v) return;
+  addTodo("custom",v); $("custom-input").value="";
+});
+
+/* ================= Check-in ================= */
+var form={mood:null,craving:null};
+function renderCheckinNudge(){
+  var box=$("checkin-nudge"); box.innerHTML="";
+  var done=!!state.checkins[dayKey()], h=new Date().getHours();
+  $("ci-badge").innerHTML=(!done&&h>=18)?'<span class="dotbadge" aria-label="Check-in waiting"></span>':"";
+  if(done||h<18) return;
+  box.appendChild(el("section",{class:"card soft row spread"},[
+    el("div",null,[el("h3",{text:"Evening check-in 🌙"}),el("p",{class:"small muted",text:"Takes about a minute."})]),
+    el("button",{class:"btn small",type:"button",onclick:function(){go("checkin");}},["Start"])
+  ]));
+}
+function renderMoods(){
+  var box=$("moods"); box.innerHTML="";
+  MOODS.forEach(function(m){
+    box.appendChild(el("button",{class:"mood",type:"button","aria-pressed":String(form.mood===m.v),"aria-label":m.l,onclick:function(){form.mood=m.v;renderMoods();}},[
+      el("span",{"aria-hidden":"true",text:m.e}),m.l
+    ]));
+  });
+}
+function paintCravings(){
+  Array.prototype.forEach.call($("cravings").children,function(b){ b.setAttribute("aria-pressed",String(b.dataset.v===form.craving)); });
+}
+$("cravings").addEventListener("click",function(e){
+  var b=e.target.closest("button"); if(!b) return; form.craving=b.dataset.v; paintCravings();
+});
+function loadCheckinForm(){
+  var c=state.checkins[dayKey()];
+  form.mood=c?c.mood:null; form.craving=c?c.craving:null;
+  $("proud").value=c?c.proud||"":""; $("note").value=c?c.note||"":"";
+  $("save-checkin").textContent=c?"Update check-in":"Save check-in";
+  renderMoods(); paintCravings();
+}
+$("save-checkin").addEventListener("click",function(){
+  if(!form.mood||!form.craving){ toast("Pick a mood and a craving level first."); return; }
+  state.checkins[dayKey()]={mood:form.mood,craving:form.craving,proud:$("proud").value.trim(),note:$("note").value.trim(),t:Date.now()};
+  save(); $("save-checkin").textContent="Update check-in";
+  renderHistory(); renderCheckinNudge(); showResult(form.craving);
+});
+var breathTimer=null;
+function showResult(craving){
+  var box=$("checkin-result"); box.innerHTML="";
+  if(craving!=="high"){
+    var msgs={low:"Thanks for checking in. A low-craving day is worth noticing. Enjoy your evening.",medium:"Thanks for checking in. Some pull today, and you handled it. Maybe add a rest moment tonight?"};
+    box.appendChild(el("section",{class:"card thanks"},[el("h2",{text:"Saved 💜"}),el("p",{style:"margin-top:6px",text:msgs[craving]})]));
+    box.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"nearest"});
+    return;
+  }
+  var orb=el("div",{class:"orb","aria-hidden":"true"}), label=el("p",{class:"breath-label","aria-live":"polite",text:"Ready when you are"});
+  var startBtn=el("button",{class:"btn small",type:"button"},["Start breathing"]);
+  startBtn.addEventListener("click",function(){ runBreathing(orb,label,startBtn); });
+  var drinkBox=el("div");
+  box.appendChild(el("section",{class:"card support"},[
+    el("h2",{text:"Cravings are loud tonight. That's okay."}),
+    el("p",{style:"margin-top:6px",text:pick(TIPS)}),
+    el("div",{class:"breath"},[orb,label,startBtn]),
+    el("h3",{style:"margin-top:10px",text:"Try one of these"}),
+    el("div",{class:"chips"},[
+      el("button",{class:"chip c-move",type:"button",onclick:function(){addTodo("move");toast("Added: 15 min moving");}},["🚶 + 15 min moving"]),
+      el("button",{class:"chip c-connect",type:"button",onclick:function(){addTodo("connect");toast("Added: 15 min connecting");}},["💬 + 15 min connecting"]),
+      el("button",{class:"chip c-wind",type:"button",onclick:function(){addTodo("wind");toast("Added: wind down");}},["📺 + Wind down"]),
+      el("button",{class:"chip c-rest",type:"button",onclick:function(){ drinkBox.innerHTML=""; drinkBox.appendChild(drinkCard(chooseDrink(),"Right now",null)); }},["🍹 Make a drink"])
+    ]),
+    drinkBox,
+    el("p",{class:"small",style:"margin-top:14px",text:"If it feels like too much, you can call or text 988 any time."})
+  ]));
+  box.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"start"});
+}
+function runBreathing(orb,label,btn){
+  clearTimeout(breathTimer); btn.disabled=true; btn.textContent="Breathing…";
+  var steps=[["Breathe in…",4000,"in"],["Hold…",4000,"in"],["Breathe out slowly…",6000,"out"]];
+  var cycle=0, i=0;
+  function next(){
+    if(cycle===4){ label.textContent="Nice. Notice how you feel now."; orb.className="orb"; btn.disabled=false; btn.textContent="Go again"; return; }
+    var s=steps[i]; label.textContent=s[0]; orb.className="orb "+s[2];
+    breathTimer=setTimeout(function(){ i++; if(i===steps.length){i=0;cycle++;} next(); },s[1]);
+  }
+  next();
+}
+function renderHistory(){
+  var ul=$("history"); ul.innerHTML="";
+  var keys=Object.keys(state.checkins).sort().reverse().slice(0,10);
+  if(!keys.length){ ul.appendChild(el("li",{class:"muted small",text:"Your check-ins will show up here."})); return; }
+  keys.forEach(function(k){
+    var c=state.checkins[k], m=MOODS.filter(function(x){return x.v===c.mood;})[0]||MOODS[2];
+    var date=parseKey(k).toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
+    ul.appendChild(el("li",null,[
+      el("span",{class:"em","aria-label":m.l,text:m.e}),
+      el("div",null,[
+        el("div",{class:"small"},[el("strong",{text:date}),el("span",{class:"muted",text:"  ·  cravings "+c.craving})]),
+        c.proud?el("div",{text:"Proud of: "+c.proud}):null,
+        c.note?el("div",{class:"small muted",text:c.note}):null
+      ])
+    ]));
+  });
+}
+
+/* ================= Hobbies ================= */
+function renderHobbies(){
+  var picks=$("hobby-picks"); picks.innerHTML="";
+  HOBBY_ORDER.forEach(function(k){
+    var h=HOBBIES[k];
+    picks.appendChild(el("button",{class:"hobby-pick",type:"button",style:"background:"+h.color,"aria-pressed":String(state.currentHobby===k),onclick:function(){state.currentHobby=k;save();renderHobbies();}},[
+      el("span",{"aria-hidden":"true",text:h.emoji}),h.name
+    ]));
+  });
+  var k=state.currentHobby, h=HOBBIES[k];
+  var hs=state.hobbies[k]||{step:0,lastDone:null};
+  var doneToday=hs.lastDone===dayKey();
+  var idx=doneToday?Math.max(0,hs.step-1):hs.step;
+  var finished=!doneToday&&hs.step>=h.lessons.length;
+  var card=$("lesson-card"); card.innerHTML="";
+  if(finished){
+    card.appendChild(el("div",{class:"lesson"},[
+      el("h3",{text:"You've done every step 🎉"}),
+      el("p",{text:"That's a real new skill. Keep practicing your favorites, try another hobby, or start this one over."}),
+      el("button",{class:"btn ghost small",style:"margin-top:14px",type:"button",onclick:function(){state.hobbies[k]={step:0,lastDone:null};save();renderHobbies();}},["Start over"])
+    ]));
+    return;
+  }
+  var L=h.lessons[idx];
+  var kids=[
+    el("p",{class:"small muted",text:"Today's step"}),
+    el("h3",{text:L.t}),
+    el("p",{text:L.b}),
+    el("ul",null,L.s.map(function(s){return el("li",{text:s});}))
+  ];
+  if(doneToday){
+    kids.push(el("div",{class:"lesson-done",text:"Done for today ✓  Your next step shows up tomorrow."}));
+  } else {
+    kids.push(el("button",{class:"btn",style:"margin-top:16px",type:"button",onclick:function(){
+      state.hobbies[k]={step:hs.step+1,lastDone:dayKey()}; save(); renderHobbies(); confetti(); toast("Step done! See you tomorrow 🌱");
+    }},["I did it"]));
+  }
+  card.appendChild(el("div",{class:"lesson"},kids));
+}
+
+/* ================= Me ================= */
+var slipMsg=false;
+function daysSince(k){ return Math.max(0,Math.round((parseKey(dayKey())-parseKey(k))/86400000)); }
+function renderDays(){
+  var card=$("days-card"); card.innerHTML="";
+  card.appendChild(el("h2",{id:"days-h",text:"Your days"}));
+  if(!state.showDays){
+    card.appendChild(el("p",{class:"small muted",style:"margin-top:6px",text:"Kept out of sight until you want it."}));
+    card.appendChild(el("button",{class:"btn ghost small",style:"margin-top:12px",type:"button",onclick:function(){state.showDays=true;save();renderDays();}},["Show my days"]));
+    return;
+  }
+  if(!state.startDate){
+    var inp=el("input",{type:"date",class:"field",id:"start-date",max:dayKey(),value:dayKey()});
+    card.appendChild(el("label",{for:"start-date",class:"small",style:"display:block;margin:8px 0 6px",text:"When did this stretch start?"}));
+    card.appendChild(inp);
+    card.appendChild(el("button",{class:"btn small",style:"margin-top:12px",type:"button",onclick:function(){
+      if(!inp.value) return; state.startDate=inp.value; save(); renderDays();
+    }},["Save"]));
+    return;
+  }
+  var n=daysSince(state.startDate);
+  card.appendChild(el("p",{class:"days-num",text:String(n)}));
+  card.appendChild(el("p",{class:"muted",text:n===1?"day sober":"days sober"}));
+  if(slipMsg){
+    card.appendChild(el("div",{class:"gentle"},[
+      el("strong",{text:"Today is day one of the next stretch."}),
+      el("p",{style:"margin-top:4px",text:"A slip doesn't erase what you've built. Everything you learned in those days is still yours, and you're still here doing the work. That matters."})
+    ]));
+  }
+  var slipBox=el("div",{style:"margin-top:14px"});
+  slipBox.appendChild(el("div",{class:"row",style:"flex-wrap:wrap"},[
+    el("button",{class:"linkish small",type:"button",onclick:function(){askSlip(slipBox);}},["I had a slip"]),
+    el("button",{class:"linkish small",type:"button",onclick:function(){state.showDays=false;slipMsg=false;save();renderDays();}},["Hide"])
+  ]));
+  card.appendChild(slipBox);
+}
+function askSlip(box){
+  box.innerHTML="";
+  box.appendChild(el("div",{class:"gentle"},[
+    el("p",{text:"Thank you for being honest. That takes courage. Want to start a fresh count from today?"}),
+    el("div",{class:"row",style:"margin-top:12px;flex-wrap:wrap"},[
+      el("button",{class:"btn small",type:"button",onclick:function(){state.startDate=dayKey();slipMsg=true;save();renderDays();}},["Start fresh today"]),
+      el("button",{class:"btn ghost small",type:"button",style:"color:var(--on-pastel)",onclick:function(){renderDays();}},["Not now"])
+    ])
+  ]));
+}
+function renderFavs(){
+  var box=$("favs"); box.innerHTML="";
+  var favs=DRINKS.filter(function(d){return (state.ratings[d.id]||0)>=4;})
+    .sort(function(a,b){return state.ratings[b.id]-state.ratings[a.id];});
+  if(!favs.length){ box.appendChild(el("p",{class:"muted",text:"Rate your 5 PM drinks with hearts. The ones you love land here and show up more often."})); return; }
+  favs.forEach(function(d){
+    box.appendChild(el("div",{class:"fav"},[el("span",{text:d.name}),el("span",{"aria-label":state.ratings[d.id]+" hearts",text:"♥".repeat(state.ratings[d.id])})]));
+  });
+}
+
+/* ================= Nav ================= */
+function go(v){
+  document.querySelectorAll(".view").forEach(function(s){s.classList.toggle("active",s.id==="view-"+v);});
+  document.querySelectorAll(".nav button").forEach(function(b){ if(b.dataset.view===v) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  if(v==="checkin"){ loadCheckinForm(); $("checkin-result").innerHTML=""; }
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".nav button").forEach(function(b){ b.addEventListener("click",function(){go(b.dataset.view);}); });
+
+function renderAll(){
+  $("today-date").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
+  renderArc(); renderDrink(); renderChips(); renderTodos(); renderCheckinNudge();
+  loadCheckinForm(); renderHistory(); renderHobbies(); renderDays(); renderFavs();
+}
+renderAll();
+
+/* Keep time-based pieces fresh (5 PM drink, evening check-in, new day) */
+var lastHour=new Date().getHours(), lastDay=dayKey();
+setInterval(function(){
+  var h=new Date().getHours(), d=dayKey();
+  if(d!==lastDay){ lastDay=d; rollDay(); save(); renderAll(); }
+  else if(h!==lastHour){ renderDrink(); renderCheckinNudge(); renderArc(); }
+  lastHour=h;
+},30000);
+})();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+}
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e) {}
+</script>
+</body>
+</html>
