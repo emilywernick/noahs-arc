@@ -360,14 +360,11 @@ var MOODS = [
 
 var HOBBIES = {
   cooking: {name:"Cooking", emoji:"🍳", color:"var(--peach)", lessons:[
-    {t:"Hold a knife like a chef", b:"Good knife skills make everything easier and safer.", s:["Pinch the blade where it meets the handle with your thumb and index finger.","Curl the fingertips of your other hand under, like a claw, so your knuckles guide the blade.","Slowly dice one onion. Speed comes later."]},
-    {t:"Soft scrambled eggs", b:"The first dish most chefs learn to get just right.", s:["Whisk 2–3 eggs with a pinch of salt.","Melt a little butter in a pan on low heat.","Stir constantly with a spatula and take them off while they still look a little glossy."]},
-    {t:"Fluffy rice on the stove", b:"A base for a hundred meals.", s:["Rinse 1 cup of white rice until the water runs mostly clear.","Add 1½ cups water and a pinch of salt, bring to a boil.","Cover, turn to the lowest heat for 15 minutes, then rest 10 minutes with the lid on."]},
-    {t:"Roast any vegetable", b:"Crispy edges make vegetables taste completely different.", s:["Heat the oven to 425°F (220°C).","Cut vegetables into even pieces and toss with oil and salt.","Spread in one layer and roast 20–30 minutes, flipping once, until browned."]},
-    {t:"Garlic olive oil pasta", b:"Five ingredients, fifteen minutes.", s:["Boil pasta in well-salted water.","Gently warm sliced garlic and a pinch of chili flakes in olive oil until golden.","Toss the pasta in with a splash of pasta water, parsley, and parmesan."]},
-    {t:"Build a stir-fry", b:"Learn the pattern and you'll never need a recipe.", s:["Get everything chopped before you turn on the heat.","Cook protein first in a very hot pan, then set it aside.","Cook vegetables, add the protein back, and finish with soy sauce, garlic, and ginger."]},
-    {t:"Soup from scratch", b:"Cozy, forgiving, and it makes leftovers.", s:["Soften onion, carrot, and celery in oil for 8 minutes.","Add garlic, then broth, a can of beans or tomatoes, and herbs.","Simmer 20 minutes and taste. Adjust salt before serving."]},
-    {t:"Cook for someone", b:"Put it all together and share it.", s:["Pick a dish you've made before.","Make it for someone you like being around.","Notice how good it feels to feed people."]}
+    {t:"Hold a knife like a chef", b:"Good knife skills make every recipe easier and safer.", s:["Pinch the blade where it meets the handle with your thumb and index finger.","Curl the fingertips of your other hand under, like a claw, so your knuckles guide the blade.","Slowly dice one onion. Speed comes later."]},
+    {t:"Japanese curry for one", b:"Cozy, rich, and way easier than it tastes. Grab a box of curry roux (like Golden Curry) from the Asian aisle.", s:["In a small pot, soften half a sliced onion in a little oil, then add bite-size chicken, one small diced carrot, and one small diced potato. Cook a few minutes until the chicken is browned.","Add about 1½ cups of water, bring to a boil, then cover and simmer 15 minutes until the potato is tender.","Turn off the heat and stir in 2 cubes of the curry roux until melted. Simmer 5 more minutes until thick, and serve over rice."]},
+    {t:"Chicken red sauce pasta", b:"A classic comfort bowl you'll make again and again.", s:["Boil pasta in well-salted water. Save a mug of the pasta water before draining.","Season bite-size chicken with salt, pepper, and Italian seasoning, cook it in a hot pan with oil until golden, and set it aside.","In the same pan, warm some garlic, add jarred marinara or crushed tomatoes, and simmer 10 minutes. Toss in the chicken and pasta with a splash of pasta water, and finish with parmesan."]},
+    {t:"Greedy BLT", b:"Not a regular BLT. A greedy one, with way more bacon than necessary.", s:["Cook 5 or 6 slices of bacon until crispy, in a pan or on a sheet pan at 400°F (200°C) for 15–20 minutes. Drain on a paper towel.","Toast two thick slices of bread and spread mayo on both.","Stack crisp lettuce, thick tomato slices sprinkled with salt and pepper, and a big pile of bacon. Go extra greedy with avocado or a fried egg."]},
+    {t:"Fried rice for one", b:"The best use of leftover rice. Cold, day-old rice fries up best.", s:["Heat oil in a pan on high, scramble one egg, and set it aside.","Add a handful of frozen peas and carrots, some garlic, and sliced green onion. Stir-fry 2 minutes.","Add about 1 cup of cold rice, press it into the pan, and let it crisp 3–4 minutes. Stir in soy sauce, a few drops of sesame oil, and the egg."]}
   ]},
   drawing: {name:"Drawing & painting", emoji:"🎨", color:"var(--lilac)", lessons:[
     {t:"Warm up with lines", b:"Loosening your hand is the first skill.", s:["Fill a page with straight lines, curves, and spirals.","Try drawing from your shoulder, not just your wrist.","Don't erase anything. This is just practice."]},
@@ -379,28 +376,28 @@ var HOBBIES = {
     {t:"Paint the view", b:"Put it together with a small scene.", s:["Look out a window or around a room.","Paint or draw a small, simple version in 15 minutes.","Keep it loose. Shapes and colors over details."]},
     {t:"A page just for fun", b:"No goals today.", s:["Fill a page with doodles, patterns, or whatever comes.","Use your favorite colors.","Keep it somewhere you'll see it."]}
   ]},
-  garden: {name:"Gardening & plants", emoji:"🪴", color:"var(--sage)", lessons:[
-    {t:"Pick an easy first plant", b:"Start with a plant that forgives mistakes.", s:["Good starters: pothos, snake plant, spider plant, or basil.","Check a nursery or grocery store.","Pick one that looks healthy with no yellow leaves."]},
-    {t:"Find the right light", b:"Light matters more than anything.", s:["Look up what light your plant likes.","Bright indirect light means near a window but not in harsh direct sun.","Move it if it's leaning or looking pale."]},
-    {t:"Water the right way", b:"Most houseplants are loved to death by overwatering.", s:["Push a finger an inch into the soil.","Water only if it feels dry.","Water slowly until a little drains out the bottom."]},
-    {t:"Regrow green onions", b:"A tiny kitchen miracle.", s:["Save the white root ends of green onions.","Stand them in a glass with a little water on a sunny sill.","Change the water every couple days and watch them regrow."]},
-    {t:"Make a new plant from a cutting", b:"Free plants, forever.", s:["Cut a pothos stem just below a small bump (a node).","Put it in a jar of water.","Roots show up in 2–4 weeks. Then pot it in soil."]},
-    {t:"Start seeds", b:"Watch something grow from nothing.", s:["Fill a small pot with moist potting mix.","Press in a few basil seeds barely below the surface.","Keep the soil damp and warm. Sprouts in about a week."]},
-    {t:"Repot a plant", b:"Give a crowded plant room to grow.", s:["Pick a pot one size bigger with a drainage hole.","Loosen the roots gently.","Set it at the same depth in fresh soil and water well."]},
-    {t:"Name your plant", b:"Seriously. It helps you remember to care for it.", s:["Give your plant a name.","Take a photo today.","Take another in a month and compare."]}
+  yoga: {name:"Yoga & stretching", emoji:"🧘", color:"var(--sage)", lessons:[
+    {t:"Wake up your body", b:"A gentle start. No flexibility needed.", s:["Roll your neck slowly in each direction, then roll your shoulders back 10 times.","Reach both arms overhead and lean gently to each side.","Finish by shaking out your hands and taking three deep breaths."]},
+    {t:"Breathe first", b:"Breathing is the heart of yoga and the fastest way to calm down.", s:["Sit comfortably with one hand on your belly.","Breathe in through your nose for 4 counts and feel your belly rise.","Breathe out for 6 counts. Keep going for 5 minutes."]},
+    {t:"Cat-cow", b:"Loosens a stiff back in minutes.", s:["Get on hands and knees, hands under shoulders, knees under hips.","Breathe in and let your belly drop as you look up (cow).","Breathe out and round your back like a cat. Do 10 slow rounds."]},
+    {t:"Child's pose & downward dog", b:"Two classic poses that stretch almost everything.", s:["Kneel, sit back on your heels, and stretch your arms forward on the floor. Hold 5 breaths.","Come to hands and knees, tuck your toes, and lift your hips up and back into an upside-down V. Bend your knees as much as you need. Hold 5 breaths.","Switch between the two poses 3 times."]},
+    {t:"Open your hips", b:"Great if you sit a lot.", s:["Step one foot forward into a low lunge with the back knee on the floor. Hold 5 breaths, then switch sides.","Lie on your back and cross one ankle over the opposite knee.","Gently pull the bottom leg toward you. Hold 5 breaths each side."]},
+    {t:"Standing flow", b:"Your first mini sequence, linked to your breath.", s:["Stand tall with feet together and arms at your sides.","Breathe in and reach up, then breathe out and fold forward with soft knees.","Breathe in and lift halfway with a flat back, then breathe out and fold. Rise back up slowly. Repeat 5 times."]},
+    {t:"Back & hamstrings", b:"Releases the tension that builds up during the day.", s:["Sit with your legs straight and fold forward gently. Hold 5 breaths without forcing it.","Lie on your back, hug one knee, and let it drop across your body into a twist.","Hold 5 breaths each side."]},
+    {t:"Your 15-minute flow", b:"Put together your favorites.", s:["Pick three or four poses from this series that felt good.","Move through them slowly, holding each for 5 breaths.","End lying flat on your back for 3 minutes, doing nothing at all."]}
   ]},
   workout: {name:"Blow off steam", emoji:"🥊", color:"var(--blush)", lessons:[
     {t:"Shake it out", b:"Anger lives in the body. Let it move.", s:["Shake your hands, arms, and legs hard for 60 seconds.","Stop and take four slow breaths, longer out than in.","Repeat twice."]},
     {t:"Shadow boxing", b:"Punch the air, not the wall.", s:["Stand with feet shoulder-width, fists up.","Throw fast jabs and crosses for 1 minute.","Rest 30 seconds. Do 3 rounds."]},
-    {t:"Wall push-ups", b:"Push the frustration away, literally.", s:["Stand arm's length from a wall, hands flat on it.","Lower your chest toward the wall and push back.","Do as many as feel good. Rest and repeat."]},
+    {t:"Push-ups", b:"Push the frustration away, literally.", s:["Start in a high plank with hands under your shoulders and your body in one straight line.","Lower your chest toward the floor, then push back up.","Do as many as you can with good form, rest, and repeat 3 times. Too hard? Drop your knees to the floor."]},
     {t:"Squat and breathe", b:"Big muscles burn off tension fast.", s:["Stand tall, then sit back like into a chair.","Breathe in going down, out coming up.","Do 3 sets of 10."]},
     {t:"Towel wring", b:"Great when you feel like squeezing something.", s:["Roll up a towel and grip each end.","Twist it as hard as you can for 10 seconds, then release.","Notice your shoulders drop. Repeat 5 times."]},
     {t:"Power walk", b:"Walking resets your head.", s:["Walk as fast as you comfortably can for 10 minutes.","Swing your arms.","Notice when your thoughts start to slow down."]},
-    {t:"The 10-minute circuit", b:"Put the moves together.", s:["1 min shadow boxing, 1 min squats, 1 min wall push-ups.","Rest 1 minute.","Repeat 2 more times, then stretch."]},
+    {t:"The 10-minute circuit", b:"Put the moves together.", s:["1 min shadow boxing, 1 min squats, 1 min push-ups.","Rest 1 minute.","Repeat 2 more times, then stretch."]},
     {t:"Make your reset plan", b:"Have a go-to for when anger shows up.", s:["Pick your two favorite moves from this series.","Decide where you'll do them at home.","Next time anger hits, go straight there for 5 minutes."]}
   ]}
 };
-var HOBBY_ORDER = ["cooking","drawing","garden","workout"];
+var HOBBY_ORDER = ["cooking","drawing","yoga","workout"];
 
 /* ================= State ================= */
 var KEY = "noahs-arc-v1";
@@ -749,6 +746,7 @@ function renderHobbies(){
       el("span",{"aria-hidden":"true",text:h.emoji}),h.name
     ]));
   });
+  if(!HOBBIES[state.currentHobby]) state.currentHobby="cooking";
   var k=state.currentHobby, h=HOBBIES[k];
   var hs=state.hobbies[k]||{step:0,lastDone:null};
   var doneToday=hs.lastDone===dayKey();
